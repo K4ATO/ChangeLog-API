@@ -1,6 +1,11 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-// creating Json Web Tokens
+// compares plain password from sign in with the hashed stored one
+export const comparePasswords = (password, hash) =>
+    bcrypt.compare(password, hash);
+
+// creates Json Web Token for Users with {id, username, secret}
 export const createJWT = (user) => {
     const token = jwt.sign(
         { id: user.id, username: user.username },
@@ -9,7 +14,8 @@ export const createJWT = (user) => {
     return token;
 };
 
-// Auth middleware
+// Auth middleware that checks the request header for an bearer token.
+// verifying it with user's jwt
 export const protect = (req, res, next) => {
     const bearer = req.headers.authorization;
 
