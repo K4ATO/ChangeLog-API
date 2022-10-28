@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 export const comparePasswords = (password, hash) =>
     bcrypt.compare(password, hash);
 
+// hashes plain password
+export const hashPassword = (password) => bcrypt.hash(password, 5);
+
 // creates Json Web Token for Users with {id, username, secret}
 export const createJWT = (user) => {
     const token = jwt.sign(
