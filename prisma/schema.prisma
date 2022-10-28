@@ -10,6 +10,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User Data
 model User {
-  id String @id @default(uuid())
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  username  String    @unique
+  password  String
+  Products  Product[]
+}
+
+// Product data
+model Product {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  name        String   @db.VarChar(255)
+  // relationship between User model and Product model
+  belongsToId String
+  belgonsTo   User     @relation(fields: [belongsToId], references: [id])
+  Updates     Update[]
+}
+
+enum UPDATE_STATUS {
+  IN_PROGRESS
+  SHIPPED
+  DEPRECATED
+}
+
+// Update data
+model Update {
+  id           String        @id @default(uuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime
+  title        String
+  body         String
+  status       UPDATE_STATUS
+  // ? means optional
+  version      String?
+  asset        String?
+  // relationship between Product model and Update model
+  productId    String
+  product      Product       @relation(fields: [productId], references: [id])
+  UpdatePoints UpdatePoint[]
+}
+
+// UpdatePoint data
+model UpdatePoint {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  name        String   @db.VarChar(225)
+  description String
+  // relationship between UpdatePoint model and Update model
+  updateId    String
+  update      Update   @relation(fields: [updateId], references: [id])
 }
