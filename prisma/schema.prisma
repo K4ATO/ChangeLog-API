@@ -45,7 +45,7 @@ model Update {
   updatedAt    DateTime      @updatedAt
   title        String
   body         String
-  status       UPDATE_STATUS
+  status       UPDATE_STATUS @default(IN_PROGRESS)
   // ? means optional
   version      String?
   asset        String?
