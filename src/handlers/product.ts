@@ -1,3 +1,4 @@
+import { nextTick } from 'process';
 import prisma from '../modules/db';
 
 // Get all products for the user
@@ -27,16 +28,22 @@ export const getProduct = async (req, res) => {
     res.json({ data: product });
 };
 
-export const createProduct = async (req, res) => {
-    const product = await prisma.product.create({
-        data: {
-            name: req.body.name,
-            belongsToId: req.user.id,
-        },
-    });
-    res.json({ data: product });
+// Create one product
+export const createProduct = async (req, res, next) => {
+    try {
+        const product = await prisma.product.create({
+            data: {
+                name: req.body.name,
+                belongsToId: req.user.id,
+            },
+        });
+        res.json({ data: product });
+    } catch (e) {
+        next(e);
+    }
 };
 
+// Update one product
 export const updateProduct = async (req, res) => {
     const updatedProduct = await prisma.product.update({
         where: {
@@ -52,6 +59,7 @@ export const updateProduct = async (req, res) => {
     res.json({ data: updatedProduct });
 };
 
+// Delete one product
 export const deleteProduct = async (req, res) => {
     const deleted = await prisma.product.delete({
         where: {
